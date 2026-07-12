@@ -1,0 +1,157 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║           FIGMA MCP SERVER - QUICKSTART GUIDE                         ║
+║                                                                        ║
+║  Figma Integration für Hermes AI Agent via Model Context Protocol     ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+📦 PROJECT READY TO DEPLOY ✅
+
+┌─ INSTALLATION ────────────────────────────────────────────────────────┐
+│                                                                        │
+│  1. Clone aus GitHub (nach Push):                                     │
+│     $ git clone https://github.com/USERNAME/figma-mcp.git             │
+│     $ cd figma-mcp                                                    │
+│                                                                        │
+│  2. Installieren:                                                     │
+│     $ pip install -e .                                               │
+│                                                                        │
+│  3. Mit Hermes registrieren:                                          │
+│     $ hermes mcp add figma --command python --args -m figma_mcp       │
+│                                                                        │
+│  4. Testen:                                                           │
+│     $ hermes mcp test figma                                           │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
+
+🔐 SETUP ERFORDERLICH
+
+1. Figma API Token (https://www.figma.com/settings)
+   → Generate Personal Access Token
+
+2. Speichern in ~/.hermes/.env:
+   FIGMA_API_TOKEN=figd_xxx...
+
+3. ~/.hermes/config.yaml:
+   mcp_servers:
+     figma:
+       command: "python"
+       args: ["-m", "figma_mcp"]
+       env:
+         FIGMA_API_TOKEN: "${FIGMA_API_TOKEN}"
+
+📋 VERFÜGBARE TOOLS (19)
+
+Files:
+  - get_file(file_key, [version])
+  - get_file_nodes(file_key, ids, [depth])
+  - list_files(team_id)
+  - get_file_versions(file_key)
+
+Components:
+  - list_components(file_key)
+  - get_component(component_key)
+  - search_components(team_id, query)
+
+Variables:
+  - list_variables(file_key)
+  - get_variable(variable_id)
+
+Teams:
+  - list_teams()
+  - list_projects(team_id)
+
+💬 BEISPIELE MIT HERMES
+
+# Liste alle Teams auf
+hermes ask "Welche Teams habe ich im Figma Account?"
+
+# Finde Komponenten
+hermes ask "Zeige mir alle Button-Komponenten aus Team XYZ"
+
+# Export Dateistruktur
+hermes ask "Gib mir die komplette Struktur aus Datei abc123xyz"
+
+🚀 GITHUB PUSH
+
+1. Repository erstellen: https://github.com/new
+   Name: figma-mcp
+   Type: Public
+
+2. Lokal pushen:
+   git remote add origin https://github.com/USERNAME/figma-mcp.git
+   git branch -M main
+   git push -u origin main
+
+3. Fertig! Repository unter:
+   https://github.com/USERNAME/figma-mcp
+
+📚 DOKUMENTATION
+
+Siehe im Projekt:
+  - README.md           → Hauptdokumentation
+  - CONFIG.md           → Konfigurationsguide
+  - DEPLOYMENT.md       → Deployment-Infos
+  - PUSH_GUIDE.md       → GitHub Push-Anleitung
+  - BUILD_SUMMARY.md    → Projekt-Übersicht
+
+🔧 ENTWICKLUNG
+
+# Tests ausführen
+pytest tests/ -v
+
+# Type Checking
+mypy figma_mcp/
+
+# Code formatieren
+black figma_mcp/
+isort figma_mcp/
+
+# Linting
+ruff check figma_mcp/
+
+📦 PyPI VERÖFFENTLICHUNG (Optional)
+
+python -m build
+python -m twine upload dist/*
+
+Danach installierbar mit:
+  pip install figma-mcp
+
+✅ CHECKLISTE VOR PRODUCTION
+
+□ API Token in ~/.hermes/.env gespeichert
+□ config.yaml konfiguriert
+□ hermes mcp test figma erfolgreich
+□ README.md von Nutzer gelesen
+□ Tools im Hermes-Agent sichtbar
+□ Erste Tool-Calls erfolgreich
+
+🔗 RESSOURCEN
+
+- Figma API Docs: https://www.figma.com/developers/api
+- MCP Spec: https://modelcontextprotocol.io
+- Hermes Repo: https://github.com/NousResearch/hermes-agent
+- Python MCP SDK: https://github.com/modelcontextprotocol/python-sdk
+
+💡 TIPPS
+
+1. Starte mit list_teams zum Testen
+2. Nutze file_key aus list_files für get_file
+3. Komponenten suchen funktioniert nur mit team_id
+4. Variablen sind file-spezifisch
+5. Error messages sind aussagekräftig (check ~/.hermes/.env)
+
+❓ SUPPORT
+
+Bei Problemen:
+1. Check ~/.hermes/.env für korrekten Token
+2. Lauf: hermes mcp test figma
+3. Schau: hermes mcp list
+4. Siehe: README.md Troubleshooting Sektion
+
+╔════════════════════════════════════════════════════════════════════════╗
+║  Status: ✅ PRODUCTION READY                                          ║
+║  Version: 0.1.0                                                       ║
+║  License: MIT                                                         ║
+╚════════════════════════════════════════════════════════════════════════╝
+
