@@ -1,0 +1,188 @@
+name: Automated Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        pip install -e ".[dev]"
+        pip install bandit radon
+
+    - name: Ruff lint check
+      id: ruff
+      run: |
+        echo "## Ruff Lint Check" >> $GITHUB_STEP_SUMMARY
+        ruff check figma_mcp/ --output-format=text >> $GITHUB_STEP_SUMMARY || true
+        ruff check figma_mcp/ --exit-zero
+      continue-on-error: true
+
+    - name: Black format check
+      id: black
+      run: |
+        echo "## Black Format Check" >> $GITHUB_STEP_SUMMARY
+        black --check figma_mcp/ 2>&1 | tee format_check.txt || true
+      continue-on-error: true
+
+    - name: MyPy type check
+      id: mypy
+      run: |
+        echo "## MyPy Type Check" >> $GITHUB_STEP_SUMMARY
+        mypy figma_mcp/ --ignore-missing-imports 2>&1 | tee mypy_check.txt || true
+      continue-on-error: true
+
+    - name: Bandit security check
+      id: bandit
+      run: |
+        echo "## 🔒 Security Check (Bandit)" >> $GITHUB_STEP_SUMMARY
+        bandit -r figma_mcp/ -f json -o bandit-report.json || true
+        python -m json.tool < bandit-report.json >> $GITHUB_STEP_SUMMARY || true
+      continue-on-error: true
+
+    - name: Code complexity analysis
+      id: complexity
+      run: |
+        echo "## Code Complexity Analysis" >> $GITHUB_STEP_SUMMARY
+        echo "### Cyclomatic Complexity:" >> $GITHUB_STEP_SUMMARY
+        radon cc figma_mcp/ -a >> $GITHUB_STEP_SUMMARY || true
+        echo "### Maintainability Index:" >> $GITHUB_STEP_SUMMARY
+        radon mi figma_mcp/ -s >> $GITHUB_STEP_SUMMARY || true
+      continue-on-error: true
+
+    - name: Comment with review results
+      uses: actions/github-script@v6
+      if: always()
+      with:
+        script: |
+          const fs = require('fs');
+          
+          let comment = '## 📋 Automated Code Review Results\n\n';
+          
+          // Check for security issues
+          try {
+            const banditReport = JSON.parse(fs.readFileSync('bandit-report.json', 'utf8'));
+            
+            if (banditReport.results && banditReport.results.length > 0) {
+              comment += '### 🔒 Security Issues\n';
+              banditReport.results.forEach(issue => {
+                comment += `- **${issue.issue_severity}**: ${issue.issue_text}\n`;
+                comment += `  File: ${issue.filename}:${issue.line_number}\n`;
+              });
+            } else {
+              comment += '### ✅ Security: No issues found\n';
+            }
+          } catch (e) {
+            console.log('Bandit report not found');
+          }
+          
+          comment += '\n';
+          
+          // Format check
+          if (fs.existsSync('format_check.txt')) {
+            const formatOutput = fs.readFileSync('format_check.txt', 'utf8');
+            if (formatOutput.includes('would be reformatted')) {
+              comment += '### ⚠️ Format Issues\n';
+              comment += '```\n' + formatOutput + '\n```\n';
+              comment += 'Run `black figma_mcp/` to fix formatting.\n\n';
+            } else {
+              comment += '### ✅ Format: OK\n\n';
+            }
+          }
+          
+          // Type check
+          if (fs.existsSync('mypy_check.txt')) {
+            const typesOutput = fs.readFileSync('mypy_check.txt', 'utf8');
+            if (typesOutput.includes('error:')) {
+              comment += '### ⚠️ Type Errors\n';
+              comment += '```\n' + typesOutput.substring(0, 500) + '\n```\n\n';
+            } else {
+              comment += '### ✅ Type Checking: OK\n\n';
+            }
+          }
+          
+          comment += '### 📊 Metrics\n';
+          comment += '- **Lines added**: ' + context.payload.pull_request.additions + '\n';
+          comment += '- **Lines deleted**: ' + context.payload.pull_request.deletions + '\n';
+          comment += '- **Files changed**: ' + context.payload.pull_request.changed_files + '\n';
+          
+          if (context.payload.pull_request.additions + context.payload.pull_request.deletions > 500) {
+            comment += '\n⚠️ **Large PR Warning**: This PR is quite large. Consider breaking it into smaller PRs for easier review.\n';
+          }
+          
+          comment += '\n---\n*Automated review powered by GitHub Actions* 🤖';
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  review-checklist:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    
+    steps:
+    - name: Post review checklist
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const checklist = `## ✅ Code Review Checklist
+
+Please ensure reviewers check:
+
+### Security 🔒
+- [ ] No hardcoded secrets or credentials
+- [ ] HTTPS used for all external calls
+- [ ] Input validation present
+- [ ] Authentication/authorization checked
+
+### Performance ⚡
+- [ ] No blocking operations in async code
+- [ ] API calls optimized
+- [ ] Memory efficient
+
+### Testing 🧪
+- [ ] Tests written for new code
+- [ ] Edge cases covered
+- [ ] Tests pass locally
+
+### Quality ✨
+- [ ] Code follows style guide
+- [ ] Type hints present
+- [ ] Documentation updated
+- [ ] No unnecessary complexity
+
+### Compatibility 🔄
+- [ ] Backwards compatible
+- [ ] No breaking changes
+- [ ] Changelog updated
+
+---
+Thanks for contributing! 🙏`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: checklist
+          });
