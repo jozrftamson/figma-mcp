@@ -1,0 +1,144 @@
+═══════════════════════════════════════════════════════════════════════════════
+🤖 FIGMA MCP SERVER - AUTOMATION QUICK START GUIDE
+═══════════════════════════════════════════════════════════════════════════════
+
+⏱️  5-MINUTE SETUP
+
+1️⃣  LOCAL SETUP (2 minutes)
+    
+    bash scripts/setup-automation.sh
+    
+    This installs:
+    ✓ Pre-commit hooks
+    ✓ All automation tools
+    ✓ Git integration
+
+2️⃣  GITHUB SECRETS (2 minutes)
+    
+    Go to: Settings → Secrets and variables → Actions
+    
+    Add these secrets:
+    • DOCKERHUB_USERNAME = your docker hub username
+    • DOCKERHUB_TOKEN = your docker hub token
+    
+    Get Docker Hub token at:
+    https://hub.docker.com/settings/security
+
+3️⃣  VERIFICATION (1 minute)
+    
+    After commit:
+    • Go to Actions tab on GitHub
+    • Watch workflows run
+    • Should see green checkmarks ✅
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 WHAT'S AUTOMATED
+
+ON EVERY PUSH:
+  ✅ Tests on 3 Python versions
+  ✅ Code linting & formatting
+  ✅ Type checking
+  ✅ Security scanning
+  ✅ Docker build
+
+WEEKLY:
+  ✅ Security scanning (CodeQL, Bandit)
+  ✅ Dependency updates (Dependabot)
+
+EVERY 6 HOURS:
+  ✅ Health checks
+
+ON VERSION TAG (git tag v1.0.0):
+  ✅ PyPI package publish
+  ✅ GitHub release creation
+  ✅ Docker push
+  ✅ Changelog generation
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🛠️  COMMON COMMANDS
+
+Development:
+    make setup          Setup dev environment
+    make test           Run tests
+    make lint           Check code quality
+    make format         Auto-format code
+    make quality        Full quality checks
+
+Release:
+    make build          Build package
+    make publish        Publish to PyPI
+    make docker-build   Build Docker image
+    make docker-push    Push to Docker Hub
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📁 KEY FILES
+
+Workflows:           .github/workflows/*.yml (7 files)
+Local automation:    Makefile
+Pre-commit hooks:    .pre-commit-config.yaml
+Docker:              Dockerfile
+Setup scripts:       scripts/setup-automation.sh
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 FIRST RELEASE
+
+1. Make your changes locally
+2. Commit and push
+3. Watch CI run in Actions tab
+4. When ready to release:
+   
+   git tag v1.0.0
+   git push --tags
+
+5. GitHub automatically:
+   ✓ Creates release
+   ✓ Publishes to PyPI
+   ✓ Pushes Docker image
+   ✓ Generates changelog
+
+═══════════════════════════════════════════════════════════════════════════════
+
+❓ TROUBLESHOOTING
+
+Workflows not running?
+  • Check: Settings → Actions → General (enable if needed)
+  • Check: .github/workflows/*.yml exist
+  • Push a commit to trigger
+
+Pre-commit hook failed?
+  • Run: pre-commit run --all-files
+  • Fix issues, then commit again
+
+Docker push failing?
+  • Check: DOCKERHUB_TOKEN secret is set
+  • Check: Token hasn't expired
+  • Check: Docker Hub account is active
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📚 FULL DOCUMENTATION
+
+Quick guide:     AUTOMATION_SETUP.md
+Technical ref:   AUTOMATION.md
+Make help:       make help
+Pre-commit:      .pre-commit-config.yaml
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ DONE!
+
+Your project now has:
+✅ Professional CI/CD
+✅ Automated testing
+✅ Security scanning
+✅ Docker automation
+✅ PyPI releases
+✅ Community engagement
+
+Time to first automated release: ~5 minutes ⚡
+
+═══════════════════════════════════════════════════════════════════════════════
