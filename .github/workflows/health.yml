@@ -1,0 +1,37 @@
+name: Health Check
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install -e ".[dev]"
+
+    - name: Health check
+      run: |
+        pytest tests/ -v --tb=short || true
+
+    - name: Create issue on failure
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const issue = await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: '⚠️ Health check failed',
+            body: 'Automated health check failed. Review: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          });

@@ -1,0 +1,86 @@
+name: Community Management
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  issue_response:
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Add welcome comment
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const issue = context.issue;
+          const body = `Thanks for opening this issue! 👋
+
+We'll take a look and get back to you as soon as we can.
+
+In the meantime:
+- Read our [Contributing Guide](../CONTRIBUTING.md)
+- Check [similar issues](https://github.com/${{ github.repository }}/issues)
+- See our [Roadmap](../ROADMAP.md) for planned features
+
+Feel free to ask if you have any questions!`;
+
+          github.rest.issues.createComment({
+            issue_number: issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });
+
+  pr_response:
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Add PR welcome comment
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const pr = context.payload.pull_request;
+          const body = `Thanks for your contribution! 🎉
+
+We'll review your PR shortly. Please make sure:
+- ✅ Tests pass (\`pytest tests/ -v\`)
+- ✅ Code is formatted (\`black figma_mcp/\`)
+- ✅ Type checks pass (\`mypy figma_mcp/ || true\`)
+- ✅ Linting passes (\`ruff check figma_mcp/\`)
+
+Need any help? Check [CONTRIBUTING.md](../CONTRIBUTING.md)!`;
+
+          github.rest.issues.createComment({
+            issue_number: pr.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });
+
+  add_labels:
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Auto-label issues
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const title = context.payload.issue.title.toLowerCase();
+          const labels = [];
+
+          if (title.includes('bug') || title.includes('fix')) labels.push('type/bug');
+          if (title.includes('feature') || title.includes('enhancement')) labels.push('type/feature');
+          if (title.includes('doc')) labels.push('type/documentation');
+          if (title.includes('question')) labels.push('question');
+
+          if (labels.length > 0) {
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: labels
+            });
+          }
