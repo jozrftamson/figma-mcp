@@ -1,0 +1,236 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║                                                                        ║
+║  FIGMA MCP SERVER - CONTRIBUTORS QUICK GUIDE                          ║
+║                                                                        ║
+║  How to contribute to the project                                     ║
+║                                                                        ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+🚀 QUICK START (5 MINUTES)
+
+1. Fork Repository
+   → https://github.com/jozrftamson/figma-mcp
+   → Click "Fork" button
+
+2. Clone Your Fork
+   $ git clone https://github.com/YOUR_USERNAME/figma-mcp.git
+   $ cd figma-mcp
+
+3. Setup Development
+   $ python -m venv venv
+   $ source venv/bin/activate
+   $ pip install -e ".[dev]"
+
+4. Create Feature Branch
+   $ git checkout -b feature/my-feature
+
+5. Make Changes & Test
+   $ # Edit your code ...
+   $ pytest tests/ -v
+   $ black figma_mcp/
+   $ mypy figma_mcp/
+
+6. Commit & Push
+   $ git add .
+   $ git commit -m "feat: Add my feature"
+   $ git push origin feature/my-feature
+
+7. Create Pull Request
+   → https://github.com/jozrftamson/figma-mcp/pulls
+   → Click "New Pull Request"
+
+═════════════════════════════════════════════════════════════════════════
+
+📚 IMPORTANT DOCUMENTS
+
+Read These First:
+  1. README.md           - What the project does
+  2. CONTRIBUTING.md     - Detailed contribution guidelines
+  3. CODE_OF_CONDUCT.md  - Community standards
+
+═════════════════════════════════════════════════════════════════════════
+
+💻 DEVELOPMENT WORKFLOW
+
+Setup:
+  $ git clone YOUR_FORK
+  $ git remote add upstream https://github.com/jozrftamson/figma-mcp.git
+  $ python -m venv venv
+  $ source venv/bin/activate
+  $ pip install -e ".[dev]"
+
+Before Coding:
+  $ git fetch upstream
+  $ git checkout -b feature/description
+
+While Coding:
+  $ black figma_mcp/          # Format
+  $ isort figma_mcp/          # Sort imports
+  $ ruff check figma_mcp/     # Lint
+  $ mypy figma_mcp/           # Type check
+  $ pytest tests/ -v          # Test
+
+Submit:
+  $ git push origin feature/description
+  → Create PR on GitHub
+
+═════════════════════════════════════════════════════════════════════════
+
+✅ CONTRIBUTION TYPES
+
+Bug Fixes:
+  - Found a bug? Create issue first or fix directly
+  - Branch: bugfix/description
+  - Add test case for the bug
+
+Features:
+  - Have an idea? Discuss in issue first
+  - Branch: feature/description
+  - Add tests + documentation
+
+Docs:
+  - Improve README, guides, docstrings?
+  - Branch: docs/description
+  - Keep grammar and links current
+
+Tests:
+  - Increase coverage?
+  - Branch: test/description
+  - Aim for 80%+ coverage
+
+═════════════════════════════════════════════════════════════════════════
+
+🎯 CODE STANDARDS
+
+Type Hints:
+  ✅ async def get_file(self, file_key: str) -> dict:
+  ❌ async def get_file(self, file_key):
+
+Docstrings:
+  ✅ """Brief description.
+     
+     Detailed explanation.
+     
+     Args:
+         param: Description
+         
+     Returns:
+         Description
+     """
+  ❌ # Get file
+
+Comments:
+  ✅ # Retry with backoff to handle transient network issues
+  ❌ # Get the file
+
+Error Handling:
+  ✅ except httpx.HTTPStatusError as e:
+         if e.response.status_code == 401:
+  ❌ except Exception:
+
+═════════════════════════════════════════════════════════════════════════
+
+🧪 TESTING
+
+Write Tests:
+  pytest tests/test_client.py::test_get_file -v
+
+Add Coverage:
+  pytest tests/ --cov=figma_mcp
+
+Check All:
+  pytest tests/ -v
+  mypy figma_mcp/
+  ruff check figma_mcp/
+  black --check figma_mcp/
+
+═════════════════════════════════════════════════════════════════════════
+
+🐛 REPORTING ISSUES
+
+Title: Concise description
+Type: Bug, Feature, Docs
+Steps: How to reproduce
+Environment: Python, OS
+Expected: What should happen
+Actual: What happens now
+Logs: Error messages/stack trace
+
+Use template: https://github.com/jozrftamson/figma-mcp/issues/new
+
+═════════════════════════════════════════════════════════════════════════
+
+📝 PR CHECKLIST BEFORE SUBMIT
+
+Code:
+  ☐ Code follows PEP 8
+  ☐ Type hints added
+  ☐ Docstrings complete
+  ☐ No hard-coded values
+  ☐ Error handling proper
+
+Tests:
+  ☐ Tests written/updated
+  ☐ pytest all green
+  ☐ Coverage >= 80%
+
+Documentation:
+  ☐ README updated (if needed)
+  ☐ Docstrings clear
+  ☐ Comments helpful
+
+Quality:
+  ☐ mypy passes
+  ☐ ruff check clean
+  ☐ black formatted
+  ☐ No warnings
+
+Process:
+  ☐ Branch up-to-date with upstream
+  ☐ Commits clean & squashed
+  ☐ PR description complete
+  ☐ Related issues linked
+
+═════════════════════════════════════════════════════════════════════════
+
+💡 GOOD FIRST ISSUES
+
+Looking to start? Check these:
+  - Add error handling for edge cases
+  - Improve docstrings
+  - Add test coverage
+  - Update documentation
+  - Optimize performance
+
+Ask in issues if you need help!
+
+═════════════════════════════════════════════════════════════════════════
+
+🔗 USEFUL LINKS
+
+Repository:      https://github.com/jozrftamson/figma-mcp
+Issues:          https://github.com/jozrftamson/figma-mcp/issues
+Pull Requests:   https://github.com/jozrftamson/figma-mcp/pulls
+Contributing:    See CONTRIBUTING.md in repo
+Code of Conduct: See CODE_OF_CONDUCT.md in repo
+
+═════════════════════════════════════════════════════════════════════════
+
+❓ QUESTIONS?
+
+1. Check README.md
+2. Look at CONTRIBUTING.md
+3. Search existing issues
+4. Create a GitHub discussion
+5. Ask on issue/PR
+
+═════════════════════════════════════════════════════════════════════════
+
+🎉 THANK YOU FOR CONTRIBUTING!
+
+Every contribution makes the project better.
+
+Questions? Create an issue or discussion.
+Ready to contribute? Fork and let's go! 🚀
+
+═════════════════════════════════════════════════════════════════════════
