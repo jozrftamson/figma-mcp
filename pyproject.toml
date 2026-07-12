@@ -40,10 +40,12 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/figma-mcp"
-Documentation = "https://github.com/yourusername/figma-mcp#readme"
-Repository = "https://github.com/yourusername/figma-mcp.git"
-Issues = "https://github.com/yourusername/figma-mcp/issues"
+Homepage = "https://github.com/jozrftamson/figma-mcp"
+Documentation = "https://github.com/jozrftamson/figma-mcp#readme"
+Repository = "https://github.com/jozrftamson/figma-mcp.git"
+Issues = "https://github.com/jozrftamson/figma-mcp/issues"
+Funding = "https://opencollective.com/figma-mcp"
+Sponsors = "https://github.com/sponsors/jozrftamson"
 
 [project.scripts]
 figma-mcp = "figma_mcp.server:main"
