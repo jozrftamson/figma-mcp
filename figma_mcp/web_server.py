@@ -1,9 +1,8 @@
 """FastAPI web server for Figma MCP Server - Railway deployment."""
 
-import os
 import asyncio
 import logging
-from typing import Any, Dict, Optional
+import os
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,8 +10,8 @@ from fastapi.responses import JSONResponse
 
 # Import MCP server components
 try:
-    from figma_mcp.server import TOOLS
     from figma_mcp.client import FigmaClient
+    from figma_mcp.server import TOOLS
 except ImportError:
     # Fallback if imports fail
     TOOLS = {}
@@ -94,11 +93,11 @@ async def list_tools():
         "tools": list(TOOLS.keys()),
         "count": len(TOOLS),
         "categories": {
-            "file": [t for t in TOOLS.keys() if "file" in t.lower()],
-            "component": [t for t in TOOLS.keys() if "component" in t.lower()],
-            "variable": [t for t in TOOLS.keys() if "variable" in t.lower()],
-            "team": [t for t in TOOLS.keys() if "team" in t.lower()],
-            "project": [t for t in TOOLS.keys() if "project" in t.lower()],
+            "file": [t for t in TOOLS if "file" in t.lower()],
+            "component": [t for t in TOOLS if "component" in t.lower()],
+            "variable": [t for t in TOOLS if "variable" in t.lower()],
+            "team": [t for t in TOOLS if "team" in t.lower()],
+            "project": [t for t in TOOLS if "project" in t.lower()],
         }
     }
 
@@ -367,7 +366,7 @@ async def general_exception_handler(request, exc):
 if __name__ == "__main__":
     import uvicorn
     
-    port = int(os.getenv("PORT", 8000))
+    port = int(os.getenv("PORT", "8000"))
     environment = os.getenv("ENVIRONMENT", "production")
     
     logger.info(f"Starting Figma MCP Server on port {port}")

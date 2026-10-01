@@ -2,10 +2,9 @@
 Figma API Client
 """
 
-import httpx
 import logging
-from typing import Optional, Any
-from datetime import datetime
+
+import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +43,7 @@ class FigmaClient:
     
     # File Operations
     
-    async def get_file(self, file_key: str, version: Optional[str] = None) -> dict:
+    async def get_file(self, file_key: str, version: str | None = None) -> dict:
         """Get file structure and metadata."""
         try:
             endpoint = f"/files/{file_key}"

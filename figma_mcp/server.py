@@ -9,15 +9,9 @@ import os
 from typing import Any
 
 from mcp.server import Server
-from mcp.types import Tool, TextContent
+from mcp.types import TextContent, Tool
 
 from figma_mcp.client import FigmaClient
-from figma_mcp.tools import (
-    register_file_tools,
-    register_component_tools,
-    register_variable_tools,
-    register_team_tools,
-)
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -210,7 +204,7 @@ async def call_tool(name: str, arguments: dict) -> Any:
         result = await route_tool_call(name, arguments)
         return TextContent(text=json.dumps(result))
     except Exception as e:
-        logger.error(f"Tool execution failed: {name}", exc_info=True)
+        logger.exception(f"Tool execution failed: {name}")
         return TextContent(text=json.dumps({
             "error": str(e),
             "tool": name
