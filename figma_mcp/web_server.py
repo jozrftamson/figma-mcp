@@ -46,6 +46,7 @@ figma_client = FigmaClient(figma_token) if FigmaClient and figma_token else None
 # Health & Status Endpoints
 # ============================================================================
 
+
 @app.get("/")
 async def root():
     """Root endpoint - service status."""
@@ -86,6 +87,7 @@ async def status():
 # Tools Endpoints
 # ============================================================================
 
+
 @app.get("/tools")
 async def list_tools():
     """List all available MCP tools."""
@@ -98,7 +100,7 @@ async def list_tools():
             "variable": [t for t in TOOLS if "variable" in t.lower()],
             "team": [t for t in TOOLS if "team" in t.lower()],
             "project": [t for t in TOOLS if "project" in t.lower()],
-        }
+        },
     }
 
 
@@ -107,7 +109,7 @@ async def get_tool_info(tool_name: str):
     """Get information about a specific tool."""
     if tool_name not in TOOLS:
         raise HTTPException(status_code=404, detail=f"Tool '{tool_name}' not found")
-    
+
     return {
         "name": tool_name,
         "available": True,
@@ -119,12 +121,13 @@ async def get_tool_info(tool_name: str):
 # Figma API Endpoints
 # ============================================================================
 
+
 @app.get("/api/teams")
 async def get_teams():
     """Get all teams from Figma."""
     if not figma_client:
         raise HTTPException(status_code=401, detail="Not authenticated with Figma API")
-    
+
     try:
         teams = await figma_client.list_teams()
         return {
@@ -146,7 +149,7 @@ async def get_projects(team_id: str):
     """Get projects for a team."""
     if not figma_client:
         raise HTTPException(status_code=401, detail="Not authenticated with Figma API")
-    
+
     try:
         projects = await figma_client.list_projects(team_id)
         return {
@@ -169,7 +172,7 @@ async def get_file(file_key: str):
     """Get file details from Figma."""
     if not figma_client:
         raise HTTPException(status_code=401, detail="Not authenticated with Figma API")
-    
+
     try:
         file_data = await figma_client.get_file(file_key)
         return {
@@ -190,7 +193,7 @@ async def get_components(file_key: str):
     """Get components from a Figma file."""
     if not figma_client:
         raise HTTPException(status_code=401, detail="Not authenticated with Figma API")
-    
+
     try:
         components = await figma_client.list_components(file_key)
         return {
@@ -213,7 +216,7 @@ async def get_variables(file_key: str):
     """Get variables from a Figma file."""
     if not figma_client:
         raise HTTPException(status_code=401, detail="Not authenticated with Figma API")
-    
+
     try:
         variables = await figma_client.list_variables(file_key)
         return {
@@ -235,24 +238,25 @@ async def get_variables(file_key: str):
 # Tool Execution Endpoint
 # ============================================================================
 
+
 @app.post("/api/call")
 async def call_tool(tool_name: str, **kwargs):
     """Call a tool with parameters."""
     if tool_name not in TOOLS:
         raise HTTPException(
             status_code=404,
-            detail=f"Tool '{tool_name}' not found. Available: {list(TOOLS.keys())}"
+            detail=f"Tool '{tool_name}' not found. Available: {list(TOOLS.keys())}",
         )
-    
+
     try:
         tool_func = TOOLS[tool_name]
-        
+
         # Call function (async or sync)
         if asyncio.iscoroutinefunction(tool_func):
             result = await tool_func(**kwargs)
         else:
             result = tool_func(**kwargs)
-        
+
         return {
             "status": "success",
             "tool": tool_name,
@@ -271,6 +275,7 @@ async def call_tool(tool_name: str, **kwargs):
 # Documentation Endpoints
 # ============================================================================
 
+
 @app.get("/docs-tools")
 async def tools_documentation():
     """Documentation for all available tools."""
@@ -280,7 +285,7 @@ async def tools_documentation():
             "description": tool_func.__doc__ or "No description",
             "name": tool_name,
         }
-    
+
     return {
         "tools": docs,
         "total": len(TOOLS),
@@ -326,6 +331,7 @@ async def api_reference():
 # Error Handlers
 # ============================================================================
 
+
 @app.exception_handler(404)
 async def not_found_handler(request, exc):
     """Handle 404 errors."""
@@ -340,7 +346,7 @@ async def not_found_handler(request, exc):
                 "health": "/health",
                 "tools": "/tools",
                 "api_reference": "/api-reference",
-            }
+            },
         },
     )
 
@@ -365,15 +371,15 @@ async def general_exception_handler(request, exc):
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     port = int(os.getenv("PORT", "8000"))
     environment = os.getenv("ENVIRONMENT", "production")
-    
+
     logger.info(f"Starting Figma MCP Server on port {port}")
     logger.info(f"Environment: {environment}")
     logger.info(f"Tools available: {len(TOOLS)}")
     logger.info(f"Authenticated: {figma_client is not None}")
-    
+
     uvicorn.run(
         "figma_mcp.web_server:app",
         host="0.0.0.0",
