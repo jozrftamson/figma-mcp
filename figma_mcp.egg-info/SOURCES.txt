@@ -54,6 +54,9 @@ figma_mcp.egg-info/dependency_links.txt
 figma_mcp.egg-info/entry_points.txt
 figma_mcp.egg-info/requires.txt
 figma_mcp.egg-info/top_level.txt
+figma_mcp/__pycache__/__init__.cpython-312.pyc
+figma_mcp/__pycache__/client.cpython-312.pyc
+figma_mcp/__pycache__/server.cpython-312.pyc
 figma_mcp/tools/__init__.py
 scripts/code-review-checklist.py
 scripts/create-templates.sh
@@ -62,3 +65,5 @@ scripts/setup-automation.sh
 scripts/test-hermes-integration.sh
 tests/conftest.py
 tests/test_client.py
+tests/__pycache__/conftest.cpython-312-pytest-9.1.1.pyc
+tests/__pycache__/test_client.cpython-312-pytest-9.1.1.pyc
