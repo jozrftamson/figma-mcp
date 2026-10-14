@@ -23,8 +23,11 @@ server = Server("figma-mcp")
 # Global Figma client
 figma_client: FigmaClient | None = None
 
+# Exported tools for web server
+TOOLS: dict = {}
 
-@server.list_tools()
+
+@server.list_tools
 async def list_tools() -> list[Tool]:
     """List all available Figma tools."""
     tools = []
@@ -35,7 +38,7 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="get_file",
                 description="Retrieve complete file structure and metadata from Figma",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "file_key": {
@@ -53,7 +56,7 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="get_file_nodes",
                 description="Get specific nodes from a Figma file",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "file_key": {"type": "string", "description": "Figma file key"},
@@ -73,7 +76,7 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="list_files",
                 description="List all files accessible in a team",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "team_id": {
@@ -87,7 +90,7 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="get_file_versions",
                 description="Get version history of a Figma file",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "file_key": {"type": "string", "description": "Figma file key"}
@@ -104,7 +107,7 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="list_components",
                 description="List all components in a Figma file",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "file_key": {"type": "string", "description": "Figma file key"}
@@ -115,7 +118,7 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="get_component",
                 description="Get detailed information about a specific component",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "component_key": {
@@ -129,7 +132,7 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="search_components",
                 description="Search for components by name across a team",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "team_id": {"type": "string", "description": "Team ID"},
@@ -147,7 +150,7 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="list_variables",
                 description="List all variables in a file",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "file_key": {"type": "string", "description": "Figma file key"}
@@ -158,7 +161,7 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="get_variable",
                 description="Get details about a specific variable",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "variable_id": {"type": "string", "description": "Variable ID"}
@@ -175,12 +178,12 @@ async def list_tools() -> list[Tool]:
             Tool(
                 name="list_teams",
                 description="List all accessible teams",
-                inputSchema={"type": "object", "properties": {}},
+                input_schema={"type": "object", "properties": {}},
             ),
             Tool(
                 name="list_projects",
                 description="List projects in a team",
-                inputSchema={
+                input_schema={
                     "type": "object",
                     "properties": {
                         "team_id": {"type": "string", "description": "Team ID"}
@@ -194,7 +197,7 @@ async def list_tools() -> list[Tool]:
     return tools
 
 
-@server.call_tool()
+@server.call_tool
 async def call_tool(name: str, arguments: dict) -> Any:
     """Execute a Figma tool."""
     if figma_client is None:
@@ -279,6 +282,9 @@ async def main():
 def run():
     """Entry point for console script."""
     asyncio.run(main())
+
+
+__all__ = ["server", "TOOLS", "main", "run"]
 
 
 if __name__ == "__main__":
