@@ -12,21 +12,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy project files
-COPY pyproject.toml README.md LICENSE ./
+COPY pyproject.toml README.md LICENSE requirements-web.txt ./
 COPY figma_mcp/ ./figma_mcp/
 COPY tests/ ./tests/
 
 # Install dependencies
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir -e . && \
+    pip install --no-cache-dir -r requirements-web.txt
 
 # Create non-root user
 RUN useradd -m -u 1000 figma && chown -R figma:figma /app
 USER figma
 
 # Environment variables
-ENV FIGMA_API_TOKEN=""
 ENV MCP_LOG_LEVEL="INFO"
 ENV PYTHONUNBUFFERED=1
+
+# Token must be passed at runtime, not build time
+ARG FIGMA_API_TOKEN
+ENV FIGMA_API_TOKEN=${FIGMA_API_TOKEN}
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
